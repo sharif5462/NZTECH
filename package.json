@@ -1,15 +1,27 @@
 {
-  "name": "hirepulse-monorepo",
+  "name": "nztech-ats-platform",
   "version": "1.0.0",
   "private": true,
+  "description": "Enterprise Recruitment AI Platform & Careers Portal - Next.js 14, Express.js & PostgreSQL Monorepo",
   "workspaces": [
     "frontend",
     "backend"
   ],
   "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
     "build": "npm --prefix frontend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
     "start": "npm --prefix frontend run start",
-    "test": "npm --prefix frontend run test"
+    "start:frontend": "npm --prefix frontend run start",
+    "start:backend": "npm --prefix backend run start",
+    "test": "npm --prefix frontend run test && npm --prefix backend run test",
+    "test:frontend": "npm --prefix frontend run test",
+    "test:backend": "npm --prefix backend run test",
+    "lint": "npm --prefix frontend run lint",
+    "db:generate": "npm --prefix backend run db:generate",
+    "db:push": "npm --prefix backend run db:push"
   },
   "dependencies": {
     "next": "^14.2.15",

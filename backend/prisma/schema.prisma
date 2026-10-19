@@ -1,0 +1,127 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String      @id @default(cuid())
+  name         String
+  email        String      @unique
+  passwordHash String
+  role         String      @default("RECRUITER") // ADMIN, RECRUITER, REVIEWER, CANDIDATE
+  avatarUrl    String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  createdJobs  Job[]
+  reviews      Review[]
+  auditLogs    AuditLog[]
+
+  @@map("users")
+}
+
+model Job {
+  id              String        @id @default(cuid())
+  title           String
+  department      String
+  location        String
+  type            String        @default("Full-time")
+  experienceLevel String        @default("Mid-Level")
+  minSalary       Int?
+  maxSalary       Int?
+  currency        String        @default("NZD")
+  description     String        @db.Text
+  requiredSkills  String        @db.Text
+  status          String        @default("ACTIVE")
+  createdById     String
+  createdBy       User          @relation(fields: [createdById], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  applications    Application[]
+
+  @@index([status])
+  @@index([department])
+  @@map("jobs")
+}
+
+model Application {
+  id                     String      @id @default(cuid())
+  jobId                  String
+  job                    Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  candidateName          String
+  candidateEmail         String
+  candidatePhone         String?
+  portfolioUrl           String?
+  githubUrl              String?
+  linkedinUrl            String?
+  experienceYears        Float       @default(0)
+  resumeText             String      @db.Text
+  
+  status                 String      @default("APPLIED")
+  rejectionReason        String?     @db.Text
+  stageChangedAt         DateTime    @default(now())
+
+  aiScore                Float?
+  aiMatchLevel           String?
+  aiSummary              String?     @db.Text
+  aiMatchedSkills        String?     @db.Text
+  aiMissingSkills        String?     @db.Text
+  aiRecommendedQuestions String?     @db.Text
+  aiEvaluatedAt          DateTime?
+
+  compositeScore         Float?
+
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  reviews                Review[]
+  auditLogs              AuditLog[]
+
+  @@index([jobId])
+  @@index([status])
+  @@index([candidateEmail])
+  @@map("applications")
+}
+
+model Review {
+  id                 String      @id @default(cuid())
+  applicationId      String
+  application        Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  reviewerId         String
+  reviewer           User        @relation(fields: [reviewerId], references: [id])
+  stage              String      @default("TECHNICAL")
+  technicalScore     Int
+  communicationScore Int
+  cultureScore       Int
+  overallScore       Float
+  recommendation     String
+  comments           String      @db.Text
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@index([applicationId])
+  @@index([reviewerId])
+  @@map("reviews")
+}
+
+model AuditLog {
+  id            String       @id @default(cuid())
+  applicationId String
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  actorId       String?
+  actor         User?        @relation(fields: [actorId], references: [id])
+  action        String
+  fromStatus    String?
+  toStatus      String?
+  details       String?      @db.Text
+  createdAt     DateTime     @default(now())
+
+  @@index([applicationId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

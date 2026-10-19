@@ -303,7 +303,7 @@ Eager to learn modern cloud stacks and PostgreSQL.`,
                 type="tel"
                 value={formData.candidatePhone}
                 onChange={(e) => setFormData({ ...formData, candidatePhone: e.target.value })}
-                placeholder="+64 21 000 0000"
+                placeholder="01300672974"
                 className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
               />
             </div>

@@ -200,8 +200,7 @@ export default function Footer() {
                 <Phone className="h-3.5 w-3.5 text-indigo-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="text-white font-medium block">24/7 Helpline Hotline:</span>
-                  <span>+64 9 889 2026 (NZ)</span>
-                  <span className="block">+880 17 0000 0000 (BD)</span>
+                  <span className="text-indigo-300 font-semibold text-sm">01300672974</span>
                 </div>
               </li>
               <li className="flex items-start gap-2">

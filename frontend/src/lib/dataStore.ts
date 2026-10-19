@@ -741,3 +741,13 @@ export const dbStore = {
     };
   },
 };
+
+export const COMPANY_CONTACT = {
+  hotline: "01300672974",
+  hotlineDisplay: "01300672974",
+  email: "support@hirepulse.nz",
+  regionalOffices: [
+    { city: "Dhaka", address: "Gulshan-1, Dhaka 1212, Bangladesh", phone: "01300672974" },
+    { city: "Auckland", address: "Queen St, Auckland Central, New Zealand", phone: "01300672974" },
+  ],
+};

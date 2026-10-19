@@ -122,7 +122,7 @@ export function Navbar() {
             <span className="flex items-center gap-1 text-slate-400">
               <Phone className="h-3 w-3 text-indigo-400" />
               <span>Career Hotline:</span>
-              <strong className="text-slate-200 font-semibold">+64 9 889 2026 / +880 17 0000 0000</strong>
+              <strong className="text-slate-200 font-semibold">01300672974</strong>
             </span>
             <span className="hidden sm:inline text-slate-600">&bull;</span>
             <span className="hidden sm:inline text-slate-400">

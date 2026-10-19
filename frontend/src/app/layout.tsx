@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "HirePulse | Modern Recruitment & Applicant Tracking System",
-  description: "Next-generation full-stack ATS with intelligent candidate matching and status workflows.",
+  title: "HirePulse | Leading Career & Smart Recruitment Platform",
+  description:
+    "Premier job portal and applicant tracking system. Discover top engineering, finance, management, and tech vacancies with AI-powered resume matching.",
 };
 
 export default function RootLayout({
@@ -14,16 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col">
+      <body className="bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col font-sans">
         <Navbar />
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {children}
-        </main>
-        <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
-          <p>
-            HirePulse ATS &bull; Enterprise Recruitment Platform &copy; 2026
-          </p>
-        </footer>
+        <main className="flex-1 w-full">{children}</main>
+        <Footer />
       </body>
     </html>
   );

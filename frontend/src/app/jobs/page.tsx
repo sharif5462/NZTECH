@@ -14,6 +14,8 @@ import {
   CheckCircle2,
   X,
   Filter,
+  Flame,
+  Building2,
 } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
 import { SkeletonCard } from "@/components/SkeletonLoader";
@@ -22,6 +24,7 @@ import { parseApiResponse } from "@/lib/apiHelper";
 interface Job {
   id: string;
   title: string;
+  companyName?: string;
   department: string;
   location: string;
   type: string;
@@ -32,6 +35,8 @@ interface Job {
   description: string;
   requiredSkills: string;
   status: string;
+  deadline?: string;
+  isHot?: boolean;
   _count?: { applications: number };
   createdBy?: { name: string };
   createdAt: string;
@@ -53,9 +58,10 @@ export default function JobsPage() {
 
   const [formData, setFormData] = useState({
     title: "",
-    department: "Core Engineering",
+    companyName: "Apex Tech Global",
+    department: "Software & Technology",
     location: "Auckland, New Zealand",
-    type: "Full-time",
+    type: "Full-Time",
     experienceLevel: "Mid-Level",
     minSalary: 110000,
     maxSalary: 140000,
@@ -63,6 +69,7 @@ export default function JobsPage() {
     description: "",
     requiredSkills: "TypeScript, React, Node.js, PostgreSQL",
     status: "ACTIVE",
+    deadline: "2026-12-31",
   });
 
   useEffect(() => {
@@ -128,9 +135,10 @@ export default function JobsPage() {
       setFormSuccess("Position created successfully!");
       setFormData({
         title: "",
-        department: "Core Engineering",
+        companyName: "Apex Tech Global",
+        department: "Software & Technology",
         location: "Auckland, New Zealand",
-        type: "Full-time",
+        type: "Full-Time",
         experienceLevel: "Mid-Level",
         minSalary: 110000,
         maxSalary: 140000,
@@ -138,6 +146,7 @@ export default function JobsPage() {
         description: "",
         requiredSkills: "TypeScript, React, Node.js, PostgreSQL",
         status: "ACTIVE",
+        deadline: "2026-12-31",
       });
 
       setTimeout(() => {
@@ -233,15 +242,32 @@ export default function JobsPage() {
           {jobs.map((job) => (
             <div
               key={job.id}
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:border-indigo-200 hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:border-indigo-300 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 group"
             >
               <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="font-bold text-base text-slate-900">{job.title}</h3>
-                    <p className="text-xs text-indigo-600 font-medium">{job.department}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-800 text-white font-black flex items-center justify-center text-sm shadow-sm shrink-0">
+                      {(job.companyName || "Apex").charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-xs text-slate-500">{job.companyName || "Apex Tech Global"}</p>
+                      <h3 className="font-bold text-base text-slate-900 group-hover:text-indigo-600 transition-colors">
+                        {job.title}
+                      </h3>
+                      <p className="text-[11px] text-indigo-600 font-medium">{job.department}</p>
+                    </div>
                   </div>
-                  <StatusBadge status={job.status} size="sm" />
+
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {job.isHot && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-600 border border-rose-200 flex items-center gap-1">
+                        <Flame className="h-3 w-3" />
+                        <span>HOT</span>
+                      </span>
+                    )}
+                    <StatusBadge status={job.status} size="sm" />
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
@@ -254,9 +280,9 @@ export default function JobsPage() {
                     {job.type} &bull; {job.experienceLevel}
                   </span>
                   {job.minSalary && job.maxSalary && (
-                    <span className="flex items-center gap-1 font-medium text-slate-700">
-                      <DollarSign className="h-3.5 w-3.5 text-slate-400" />
-                      {job.minSalary.toLocaleString()} - {job.maxSalary.toLocaleString()} {job.currency}
+                    <span className="flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 text-xs">
+                      <DollarSign className="h-3.5 w-3.5 text-emerald-600" />
+                      ${(job.minSalary / 1000).toFixed(0)}k - ${(job.maxSalary / 1000).toFixed(0)}k {job.currency || "NZD"}
                     </span>
                   )}
                 </div>
@@ -280,21 +306,26 @@ export default function JobsPage() {
 
               {/* Bottom Card Actions */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs text-slate-500 flex items-center gap-1">
-                  <Users className="h-3.5 w-3.5 text-slate-400" />
-                  <strong>{job._count?.applications || 0}</strong> applicants
-                </span>
+                <div className="flex flex-col">
+                  <span className="text-xs text-slate-500 flex items-center gap-1">
+                    <Users className="h-3.5 w-3.5 text-slate-400" />
+                    <strong>{job._count?.applications || 0}</strong> applicants
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    Deadline: {job.deadline || "Open until filled"}
+                  </span>
+                </div>
 
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/applications?jobId=${job.id}`}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold transition-colors"
                   >
                     View Pipeline
                   </Link>
                   <Link
                     href={`/apply/${job.id}`}
-                    className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-colors"
+                    className="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition-all hover:scale-[1.02] cursor-pointer"
                   >
                     Apply Now
                   </Link>
@@ -334,16 +365,29 @@ export default function JobsPage() {
             )}
 
             <form onSubmit={handleCreateJob} className="space-y-3">
-              <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">Job Title</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="e.g. Senior Backend Engineer"
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">Job Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="e.g. Senior Full Stack Developer"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-slate-700 block mb-1">Company / Employer</label>
+                  <input
+                    type="text"
+                    required
+                    value={(formData as any).companyName || ""}
+                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value } as any)}
+                    placeholder="e.g. Apex Tech Global"
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

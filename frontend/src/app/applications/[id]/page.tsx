@@ -27,6 +27,7 @@ import StatusBadge from "@/components/StatusBadge";
 import ScoreGauge from "@/components/ScoreGauge";
 import { ApplicationStatus } from "@/types";
 import { getStageProgressPercentage } from "@/lib/workflow";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 interface ApplicationDetail {
   id: string;
@@ -143,8 +144,8 @@ export default function ApplicationDetailPage() {
       const res = await fetch(`/api/applications/${id}/ai-match`, {
         method: "POST",
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "AI evaluation failed");
+      const { ok, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "AI evaluation failed");
       setAiMessage("AI Analysis completed successfully!");
       await fetchApplication();
       setTimeout(() => setAiMessage(null), 3000);
@@ -172,8 +173,8 @@ export default function ApplicationDetailPage() {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Status update failed");
+      const { ok, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "Status update failed");
 
       setStatusModalOpen(false);
       setRejectionReason("");
@@ -205,8 +206,8 @@ export default function ApplicationDetailPage() {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to submit review");
+      const { ok, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "Failed to submit review");
 
       setReviewModalOpen(false);
       setReviewForm({

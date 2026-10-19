@@ -15,6 +15,7 @@ import {
   Sparkles,
   UploadCloud,
 } from "lucide-react";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 interface Job {
   id: string;
@@ -125,10 +126,10 @@ Eager to learn modern cloud stacks and PostgreSQL.`,
         }),
       });
 
-      const data = await res.json();
+      const { ok, data, error: apiError } = await parseApiResponse(res);
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to submit application");
+      if (!ok) {
+        throw new Error(apiError || "Failed to submit application");
       }
 
       setSubmitSuccess("Application submitted successfully!");

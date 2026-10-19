@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, ArrowRight, Lock, Mail, User, AlertCircle } from "lucide-react";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -26,10 +27,10 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password, role }),
       });
 
-      const data = await res.json();
+      const { ok, data, error: apiError } = await parseApiResponse(res);
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to create account");
+      if (!ok) {
+        throw new Error(apiError || "Failed to create account");
       }
 
       router.push("/dashboard");

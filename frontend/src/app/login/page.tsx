@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Sparkles, ArrowRight, Lock, Mail, AlertCircle } from "lucide-react";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 interface DbUser {
   id: string;
@@ -45,10 +46,10 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const { ok, data, error: apiError } = await parseApiResponse(res);
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to authenticate");
+      if (!ok) {
+        throw new Error(apiError || "Failed to authenticate");
       }
 
       router.push("/dashboard");

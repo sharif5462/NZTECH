@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import StatusBadge from "@/components/StatusBadge";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 interface Job {
   id: string;
@@ -118,10 +119,10 @@ export default function JobsPage() {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      const { ok, data, error: apiError } = await parseApiResponse(res);
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to create position");
+      if (!ok) {
+        throw new Error(apiError || "Failed to create position");
       }
 
       setFormSuccess("Position created successfully!");

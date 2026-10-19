@@ -1,3 +1,6 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Sparkles,
@@ -10,7 +13,29 @@ import {
   Users,
 } from "lucide-react";
 
+interface UserAccount {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export default function Home() {
+  const [dbUsers, setDbUsers] = useState<UserAccount[]>([]);
+  const [metrics, setMetrics] = useState<{ totalApplications: number; activeJobs: number } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/users")
+      .then((r) => r.json())
+      .then((d) => setDbUsers(d.users || []))
+      .catch(() => {});
+
+    fetch("/api/analytics")
+      .then((r) => r.json())
+      .then((d) => setMetrics(d.metrics))
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="space-y-12 max-w-5xl mx-auto py-6">
       {/* Hero Section */}
@@ -28,6 +53,18 @@ export default function Home() {
           HirePulse is an enterprise recruitment platform designed to solve candidate screening bottlenecks.
           Featuring a status-based workflow state machine, PostgreSQL persistence via Prisma ORM, and a dual-mode AI resume scoring engine.
         </p>
+
+        {metrics && (
+          <div className="inline-flex items-center gap-6 px-5 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-sm text-xs text-slate-600">
+            <span>
+              <strong className="text-indigo-600 font-bold">{metrics.activeJobs}</strong> Active Positions in DB
+            </span>
+            <span className="h-3 w-px bg-slate-200" />
+            <span>
+              <strong className="text-emerald-600 font-bold">{metrics.totalApplications}</strong> Candidates in Pipeline
+            </span>
+          </div>
+        )}
 
         <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
           <Link
@@ -79,40 +116,29 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Demo Credentials Box for Examiner */}
+      {/* Demo Credentials Box Loaded Dynamically from Database */}
       <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-6 sm:p-8 shadow-xl">
         <div className="flex items-center gap-3 mb-4">
           <ShieldCheck className="h-6 w-6 text-indigo-400" />
-          <h2 className="text-lg font-bold">Examiner Quick Test Credentials</h2>
+          <h2 className="text-lg font-bold">Registered Database Accounts ({dbUsers.length} in PostgreSQL)</h2>
         </div>
         <p className="text-xs text-slate-300 mb-6">
-          Use the one-click role switcher inside the top navigation bar, or log in manually with the following pre-seeded accounts:
+          All accounts below are retrieved directly from the PostgreSQL <code>users</code> table. Password for seeded accounts is <code>Password123!</code>:
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
-          <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-            <span className="text-[10px] font-bold text-rose-300 uppercase tracking-wider block mb-1">
-              Admin Role
-            </span>
-            <p className="font-bold text-white">admin@hirepulse.nz</p>
-            <p className="text-slate-400">Password123!</p>
-          </div>
-
-          <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-            <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider block mb-1">
-              Recruiter Role
-            </span>
-            <p className="font-bold text-white">recruiter@hirepulse.nz</p>
-            <p className="text-slate-400">Password123!</p>
-          </div>
-
-          <div className="bg-white/10 rounded-xl p-4 border border-white/10">
-            <span className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider block mb-1">
-              Reviewer / Tech Lead
-            </span>
-            <p className="font-bold text-white">lead.dev@hirepulse.nz</p>
-            <p className="text-slate-400">Password123!</p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs font-mono">
+          {dbUsers.map((u) => (
+            <div key={u.id} className="bg-white/10 rounded-xl p-4 border border-white/10 flex flex-col justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-wider block mb-1">
+                  {u.role}
+                </span>
+                <p className="font-bold text-white truncate">{u.name}</p>
+                <p className="text-slate-300 truncate">{u.email}</p>
+              </div>
+              <p className="text-slate-400 text-[10px] mt-2">Password123!</p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

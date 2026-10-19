@@ -68,6 +68,24 @@ export default function JobsPage() {
     fetchJobs();
   }, [search, department, type]);
 
+  const [departmentsList, setDepartmentsList] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
+  const fetchDepartments = async () => {
+    try {
+      const res = await fetch("/api/jobs/departments");
+      if (res.ok) {
+        const data = await res.json();
+        setDepartmentsList(data.departments || []);
+      }
+    } catch {
+      setDepartmentsList([]);
+    }
+  };
+
   const fetchJobs = async () => {
     try {
       setLoading(true);
@@ -171,9 +189,11 @@ export default function JobsPage() {
           className="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
         >
           <option value="">All Departments</option>
-          <option value="Core Engineering">Core Engineering</option>
-          <option value="Product & Experience">Product & Experience</option>
-          <option value="Infrastructure">Infrastructure</option>
+          {departmentsList.map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
         </select>
 
         <select

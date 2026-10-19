@@ -1,16 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Sparkles, ArrowRight, Lock, Mail, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Sparkles, ArrowRight, Lock, Mail, AlertCircle } from "lucide-react";
+
+interface DbUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("recruiter@hirepulse.nz");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("Password123!");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dbUsers, setDbUsers] = useState<DbUser[]>([]);
+
+  useEffect(() => {
+    fetch("/api/auth/users")
+      .then((r) => r.json())
+      .then((d) => {
+        const users = d.users || [];
+        setDbUsers(users);
+        if (users.length > 0) {
+          setEmail(users[0].email);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,35 +130,31 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* Quick Demo Pre-fill for Reviewer */}
-        <div className="pt-4 border-t border-slate-100 space-y-2">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center">
-            Examiner Quick Fill Credentials:
-          </p>
-          <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <button
-              type="button"
-              onClick={() => handlePreFill("admin@hirepulse.nz")}
-              className="p-1.5 rounded-lg border border-slate-200 hover:bg-indigo-50 hover:border-indigo-200 text-slate-700 text-[11px] font-medium"
-            >
-              Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePreFill("recruiter@hirepulse.nz")}
-              className="p-1.5 rounded-lg border border-slate-200 hover:bg-indigo-50 hover:border-indigo-200 text-slate-700 text-[11px] font-medium"
-            >
-              Recruiter
-            </button>
-            <button
-              type="button"
-              onClick={() => handlePreFill("lead.dev@hirepulse.nz")}
-              className="p-1.5 rounded-lg border border-slate-200 hover:bg-indigo-50 hover:border-indigo-200 text-slate-700 text-[11px] font-medium"
-            >
-              Reviewer
-            </button>
+        {/* Database Accounts Loaded Dynamically */}
+        {dbUsers.length > 0 && (
+          <div className="pt-4 border-t border-slate-100 space-y-2">
+            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center">
+              Quick Select Account from Database ({dbUsers.length}):
+            </p>
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {dbUsers.map((u) => (
+                <button
+                  key={u.id}
+                  type="button"
+                  onClick={() => handlePreFill(u.email)}
+                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-medium transition-all ${
+                    email === u.email
+                      ? "bg-indigo-600 text-white border-indigo-600 font-bold shadow-2xs"
+                      : "border-slate-200 hover:bg-indigo-50 hover:border-indigo-200 text-slate-700"
+                  }`}
+                >
+                  <span>{u.name.split(" ")[0]}</span>
+                  <span className="text-[9px] opacity-75 ml-1">({u.role})</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <p className="text-center text-xs text-slate-500">
           Need a candidate account?{" "}

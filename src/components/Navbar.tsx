@@ -12,7 +12,6 @@ import {
   UserCheck,
   ChevronDown,
   ExternalLink,
-  ShieldAlert,
 } from "lucide-react";
 
 interface UserProfile {
@@ -26,12 +25,14 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [dbUsers, setDbUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
 
   useEffect(() => {
     fetchUser();
+    fetchDbUsers();
   }, []);
 
   const fetchUser = async () => {
@@ -47,6 +48,18 @@ export function Navbar() {
       setUser(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDbUsers = async () => {
+    try {
+      const res = await fetch("/api/auth/users");
+      if (res.ok) {
+        const data = await res.json();
+        setDbUsers(data.users || []);
+      }
+    } catch {
+      setDbUsers([]);
     }
   };
 
@@ -156,7 +169,10 @@ export function Navbar() {
             ) : user ? (
               <div className="relative">
                 <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  onClick={() => {
+                    setDropdownOpen(!dropdownOpen);
+                    fetchDbUsers();
+                  }}
                   className="flex items-center gap-2.5 p-1.5 pr-2.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all text-left"
                 >
                   <div className="h-8 w-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
@@ -175,56 +191,40 @@ export function Navbar() {
 
                 {/* Dropdown Menu */}
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
                     <div className="px-4 py-2 border-b border-slate-100">
                       <p className="text-xs font-medium text-slate-400">Signed in as</p>
                       <p className="text-sm font-semibold text-slate-900 truncate">{user.name}</p>
                       <p className="text-xs text-slate-500 truncate">{user.email}</p>
                     </div>
 
-                    {/* Quick Role Switcher for Assessment Reviewer */}
-                    <div className="px-3 py-2 border-b border-slate-100 bg-slate-50/60">
+                    {/* Quick Role Switcher Loaded Dynamically from Database */}
+                    <div className="px-3 py-2 border-b border-slate-100 bg-slate-50/60 max-h-56 overflow-y-auto">
                       <div className="flex items-center gap-1.5 text-xs font-semibold text-indigo-900 mb-1.5">
                         <UserCheck className="h-3.5 w-3.5 text-indigo-600" />
-                        <span>Reviewer Quick Role Switcher:</span>
+                        <span>Database Accounts ({dbUsers.length}):</span>
                       </div>
                       <div className="grid grid-cols-1 gap-1">
-                        <button
-                          onClick={() => handleQuickSwitch("admin@hirepulse.nz")}
-                          disabled={switching || user.role === "ADMIN"}
-                          className={`text-left px-2 py-1 rounded text-xs flex items-center justify-between ${
-                            user.role === "ADMIN"
-                              ? "bg-indigo-100 text-indigo-900 font-bold cursor-default"
-                              : "hover:bg-white text-slate-700 border border-transparent hover:border-slate-200"
-                          }`}
-                        >
-                          <span>Sarah Jenkins</span>
-                          <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1 rounded">ADMIN</span>
-                        </button>
-                        <button
-                          onClick={() => handleQuickSwitch("recruiter@hirepulse.nz")}
-                          disabled={switching || user.role === "RECRUITER"}
-                          className={`text-left px-2 py-1 rounded text-xs flex items-center justify-between ${
-                            user.role === "RECRUITER"
-                              ? "bg-indigo-100 text-indigo-900 font-bold cursor-default"
-                              : "hover:bg-white text-slate-700 border border-transparent hover:border-slate-200"
-                          }`}
-                        >
-                          <span>Marcus Vance</span>
-                          <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1 rounded">RECRUITER</span>
-                        </button>
-                        <button
-                          onClick={() => handleQuickSwitch("lead.dev@hirepulse.nz")}
-                          disabled={switching || user.role === "REVIEWER"}
-                          className={`text-left px-2 py-1 rounded text-xs flex items-center justify-between ${
-                            user.role === "REVIEWER"
-                              ? "bg-indigo-100 text-indigo-900 font-bold cursor-default"
-                              : "hover:bg-white text-slate-700 border border-transparent hover:border-slate-200"
-                          }`}
-                        >
-                          <span>Liam Chen</span>
-                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1 rounded">REVIEWER</span>
-                        </button>
+                        {dbUsers.map((u) => (
+                          <button
+                            key={u.id}
+                            onClick={() => handleQuickSwitch(u.email)}
+                            disabled={switching || user.email === u.email}
+                            className={`text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-all ${
+                              user.email === u.email
+                                ? "bg-indigo-100 text-indigo-900 font-bold cursor-default"
+                                : "hover:bg-white text-slate-700 border border-transparent hover:border-slate-200 hover:shadow-2xs"
+                            }`}
+                          >
+                            <div className="truncate pr-2">
+                              <p className="truncate leading-tight">{u.name}</p>
+                              <p className="text-[10px] text-slate-400 truncate">{u.email}</p>
+                            </div>
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border shrink-0 ${getRoleBadgeColor(u.role)}`}>
+                              {u.role}
+                            </span>
+                          </button>
+                        ))}
                       </div>
                     </div>
 

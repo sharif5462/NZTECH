@@ -1,0 +1,17 @@
+{
+  "name": "hirepulse-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend run start",
+    "test": "npm --prefix frontend run test"
+  },
+  "dependencies": {
+    "next": "^14.2.15"
+  }
+}

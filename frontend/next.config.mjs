@@ -2,15 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
   async rewrites() {
-    const backendUrl = process.env.API_URL || "http://localhost:5000";
-    return {
-      beforeFiles: [
-        {
-          source: "/api/:path*",
-          destination: `${backendUrl}/api/:path*`,
-        },
-      ],
-    };
+    if (process.env.API_URL) {
+      return {
+        beforeFiles: [
+          {
+            source: "/api/:path*",
+            destination: `${process.env.API_URL}/api/:path*`,
+          },
+        ],
+      };
+    }
+    return [];
   },
 };
 

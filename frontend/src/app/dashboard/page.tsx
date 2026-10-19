@@ -99,7 +99,15 @@ export default function DashboardPage() {
     );
   }
 
-  const { metrics, recentActivity, topCandidates } = data;
+  const metrics = data?.metrics || {
+    totalApplications: 0,
+    activeJobs: 0,
+    avgAiScore: 0,
+    pipelineBreakdown: {},
+  };
+  const pipelineBreakdown = metrics.pipelineBreakdown || (data as any)?.stages || {};
+  const recentActivity = data?.recentActivity || [];
+  const topCandidates = data?.topCandidates || [];
 
   const pipelineStages = [
     { key: "APPLIED", label: "Applied", color: "bg-sky-500" },
@@ -181,8 +189,8 @@ export default function DashboardPage() {
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Offers &amp; Hires</p>
             <p className="text-2xl font-extrabold text-emerald-600 mt-1">
-              {(metrics.pipelineBreakdown["OFFER_EXTENDED"] || 0) +
-                (metrics.pipelineBreakdown["HIRED"] || 0)}
+              {(pipelineBreakdown["OFFER_EXTENDED"] || 0) +
+                (pipelineBreakdown["HIRED"] || 0)}
             </p>
             <p className="text-[11px] text-slate-500 font-medium mt-1">Shortlisted / Extended</p>
           </div>
@@ -207,7 +215,7 @@ export default function DashboardPage() {
         {/* Funnel Progress Bars */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 pt-2">
           {pipelineStages.map((st) => {
-            const count = metrics.pipelineBreakdown[st.key] || 0;
+            const count = pipelineBreakdown[st.key] || 0;
             const pct =
               metrics.totalApplications > 0
                 ? Math.round((count / metrics.totalApplications) * 100)
@@ -305,7 +313,7 @@ export default function DashboardPage() {
                     <span className="font-semibold text-slate-700">
                       {log.actor?.name || "System Automated"}
                     </span>
-                    <span>{new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span suppressHydrationWarning>{new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                   <p className="text-slate-600 leading-tight">
                     {log.details || `Transitioned candidate to ${log.toStatus}`}

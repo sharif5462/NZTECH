@@ -672,7 +672,7 @@ export default function ApplicationDetailPage() {
                 <div key={log.id} className="text-xs border-l-2 border-indigo-200 pl-3 py-1 space-y-0.5">
                   <div className="flex items-center justify-between text-[10px] text-slate-400">
                     <span className="font-semibold text-slate-700">{log.actor?.name || "System"}</span>
-                    <span>{new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span suppressHydrationWarning>{new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                   </div>
                   <p className="text-slate-600 text-[11px] leading-tight">{log.details}</p>
                 </div>

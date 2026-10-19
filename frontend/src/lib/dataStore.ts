@@ -452,8 +452,12 @@ export const dbStore = {
       const appReviews = s.reviews.filter((r) => r.applicationId === a.id);
       return {
         ...a,
+        candidateName: a.fullName,
+        candidateEmail: a.email,
+        candidatePhone: a.phone,
         job: job ? { id: job.id, title: job.title, department: job.department } : undefined,
         reviews: appReviews,
+        _count: { reviews: appReviews.length },
       };
     });
   },
@@ -467,6 +471,10 @@ export const dbStore = {
 
     return {
       ...app,
+      candidateName: app.fullName,
+      candidateEmail: app.email,
+      candidatePhone: app.phone,
+      stageChangedAt: app.updatedAt || app.createdAt,
       job,
       reviews: appReviews,
       auditLogs: appLogs,
@@ -566,17 +574,41 @@ export const dbStore = {
 
     return {
       metrics: {
+        totalApplications: apps.length,
         total: apps.length,
         activeJobs: s.jobs.length,
+        avgAiScore: avgScore,
         averageFitIndex: avgScore,
         offersExtended: stages.OFFER_EXTENDED + stages.HIRED,
+        pipelineBreakdown: stages,
       },
       stages,
+      pipelineBreakdown: stages,
       topCandidates: apps
         .filter((a) => a.status !== "REJECTED")
         .sort((a, b) => (b.compositeScore || b.aiScore || 0) - (a.compositeScore || a.aiScore || 0))
-        .slice(0, 5),
-      recentActivity: s.auditLogs.slice(0, 8),
+        .slice(0, 5)
+        .map((a) => {
+          const job = s.jobs.find((j) => j.id === a.jobId);
+          return {
+            id: a.id,
+            candidateName: a.fullName,
+            candidateEmail: a.email,
+            status: a.status,
+            aiScore: a.aiScore,
+            compositeScore: a.compositeScore,
+            job: job ? { title: job.title } : undefined,
+          };
+        }),
+      recentActivity: s.auditLogs.slice(0, 8).map((log) => ({
+        id: log.id,
+        action: log.action,
+        fromStatus: log.fromStatus,
+        toStatus: log.toStatus,
+        details: `${log.actorName || "Recruiter"} updated candidate status to ${log.toStatus}`,
+        createdAt: log.timestamp,
+        actor: { name: log.actorName || "System Automated", role: "RECRUITER" },
+      })),
     };
   },
 };

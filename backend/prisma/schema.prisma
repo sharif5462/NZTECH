@@ -29,14 +29,14 @@ model Job {
   title           String
   department      String
   location        String
-  type            String        @default("Full-time") // Full-time, Remote, Contract, Hybrid
-  experienceLevel String        @default("Mid-Level") // Junior, Mid-Level, Senior, Lead
+  type            String        @default("Full-time")
+  experienceLevel String        @default("Mid-Level")
   minSalary       Int?
   maxSalary       Int?
   currency        String        @default("NZD")
   description     String        @db.Text
-  requiredSkills  String        @db.Text // Comma separated list of required skills
-  status          String        @default("ACTIVE") // DRAFT, ACTIVE, PAUSED, CLOSED
+  requiredSkills  String        @db.Text
+  status          String        @default("ACTIVE")
   createdById     String
   createdBy       User          @relation(fields: [createdById], references: [id])
   createdAt       DateTime      @default(now())
@@ -62,23 +62,18 @@ model Application {
   experienceYears        Float       @default(0)
   resumeText             String      @db.Text
   
-  // Workflow Status State Machine:
-  // APPLIED -> SCREENING -> AI_ANALYZED -> INTERVIEW_SCHEDULED -> OFFER_EXTENDED -> HIRED / REJECTED
   status                 String      @default("APPLIED")
   rejectionReason        String?     @db.Text
   stageChangedAt         DateTime    @default(now())
 
-  // AI / ML Evaluation Results
-  aiScore                Float?      // 0 - 100
-  aiMatchLevel           String?     // HIGH_MATCH (>=80), MODERATE_MATCH (50-79), LOW_MATCH (<50)
-  aiSummary              String?     @db.Text // Executive overview of qualifications
-  aiMatchedSkills        String?     @db.Text // JSON array of matched skills
-  aiMissingSkills        String?     @db.Text // JSON array of missing required skills
-  aiRecommendedQuestions String?     @db.Text // JSON array of customized interview questions
+  aiScore                Float?
+  aiMatchLevel           String?
+  aiSummary              String?     @db.Text
+  aiMatchedSkills        String?     @db.Text
+  aiMissingSkills        String?     @db.Text
+  aiRecommendedQuestions String?     @db.Text
   aiEvaluatedAt          DateTime?
 
-  // Business Logic Weighted Composite Score
-  // Composite = (aiScore * 0.30) + (reviewsTechnicalAvg * 0.45) + (reviewsSoftSkillsAvg * 0.25)
   compositeScore         Float?
 
   createdAt              DateTime    @default(now())
@@ -99,12 +94,12 @@ model Review {
   application        Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   reviewerId         String
   reviewer           User        @relation(fields: [reviewerId], references: [id])
-  stage              String      @default("TECHNICAL") // SCREENING, TECHNICAL, CULTURE_FIT
-  technicalScore     Int         // 1 to 10
-  communicationScore Int         // 1 to 10
-  cultureScore       Int         // 1 to 10
-  overallScore       Float       // Weighted avg of criteria
-  recommendation     String      // STRONG_YES, YES, HOLD, NO
+  stage              String      @default("TECHNICAL")
+  technicalScore     Int
+  communicationScore Int
+  cultureScore       Int
+  overallScore       Float
+  recommendation     String
   comments           String      @db.Text
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
@@ -120,7 +115,7 @@ model AuditLog {
   application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   actorId       String?
   actor         User?        @relation(fields: [actorId], references: [id])
-  action        String       // STATUS_CHANGED, AI_ANALYZED, REVIEW_ADDED, APPLICATION_SUBMITTED
+  action        String
   fromStatus    String?
   toStatus      String?
   details       String?      @db.Text

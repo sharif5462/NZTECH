@@ -1,5 +1,5 @@
 # RestAPINZtech — Standalone Express & TypeScript REST API
-> **NZ Tech Practical Assessment | Standalone Backend Service**
+> **HirePulse Recruitment Platform | Standalone Backend REST API**
 
 This is the decoupled, standalone backend REST API service for the HirePulse recruitment platform. It runs on Express.js, TypeScript, Prisma ORM, and PostgreSQL 18.
 

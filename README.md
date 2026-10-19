@@ -1,5 +1,5 @@
 # HirePulse — AI-Powered ATS & Candidate Evaluation Pipeline
-> **NZ Tech Innovation | Full Stack Developer Practical Assessment**  
+> **NZ Tech Innovation | Full-Stack Enterprise Recruitment Platform**  
 > **Repository:** `sharif5462/NZTECH` | **Active Branch:** `Dev_Sharif`
 
 HirePulse is an enterprise-grade Applicant Tracking System (ATS) and recruitment intelligence platform built to solve candidate screening bottlenecks and streamline multi-stage hiring workflows.
@@ -26,9 +26,9 @@ NZTECH/
 │   ├── prisma/schema.prisma      # PostgreSQL 18 Relational Database Schema
 │   ├── package.json
 │   └── tsconfig.json
-├── README.md                     # Complete System & Evaluation Documentation
-├── AI_FEATURE_DOC.md             # In-depth AI Matching Algorithm Documentation (10 Marks)
-├── LIVE_DEMO_GUIDE.md            # Live Demonstration Script & Rubric Walkthrough (10 Marks)
+├── README.md                     # Complete System Architecture & Setup Documentation
+├── AI_FEATURE_DOC.md             # In-depth AI Matching Algorithm Documentation
+├── LIVE_DEMO_GUIDE.md            # Technical Demonstration & Architecture Walkthrough Guide
 ├── run-all.bat                   # 🚀 One-Click Launcher (PostgreSQL + Backend + Frontend)
 ├── run-backend.bat               # Starts REST API on Port 5000
 ├── run-frontend.bat              # Starts Next.js Frontend on Port 3000
@@ -38,18 +38,18 @@ NZTECH/
 
 ---
 
-## 🌟 Rubric Coverage & Feature Matrix (100 Marks)
+## 🌟 System Capabilities & Technical Feature Matrix
 
-| Category & Marks | Assessment Requirement | Implementation in HirePulse |
+| Engineering Domain | Industry Standard Capability | Implementation in HirePulse |
 | :--- | :--- | :--- |
-| **Problem Solving & Planning (10)** | Clear architecture, recruitment problem identification, ERD, and workflow design. | Solves resume bottleneck with a 6-stage hiring state machine and composite score calculator. Layered architecture separating client, REST API, and DB. |
-| **Frontend & UX (15)** | Responsive UI, clear navigation, candidate pipeline, loading/error states. | Built with Next.js 14 App Router & Tailwind CSS. Features candidate pipeline Kanban/table, quick role switcher, skeleton loaders, and interactive modals. |
-| **Backend & Business Logic (20)** | Robust REST API, state transitions, validation, clean modular code. | Standalone Express & TypeScript REST API on port 5000. Workflow service enforces status transitions (`APPLIED` → `SCREENING` → `AI_ANALYZED` → `INTERVIEW_SCHEDULED` → `OFFER_EXTENDED` → `HIRED`/`REJECTED`). |
-| **Database & Data Handling (15)** | Relational DB, foreign keys, migrations, indexing, pgAdmin 4 support. | **PostgreSQL 18** managed via **Prisma ORM**. Tables: `users`, `jobs`, `applications`, `reviews`, `audit_logs`. Full pgAdmin 4 connectivity. |
-| **Security & Validation (10)** | Authentication, authorization, input validation, secure credential storage. | JWT bearer authentication, role-based access control (`ADMIN`, `RECRUITER`, `REVIEWER`, `APPLICANT`), Zod schema validation, and salted `bcryptjs` password hashing. |
-| **AI/ML Feature & Explanation (10)** | Practical AI matching, clear documentation of inputs/outputs/limitations. | Dual-mode AI evaluator: Offline NLP heuristic keyword & experience matcher with confidence scores, plus optional Gemini LLM integration. Detailed in [`AI_FEATURE_DOC.md`](./AI_FEATURE_DOC.md). |
-| **Code Quality, Testing & Git (10)** | Readable TypeScript, automated unit/integration tests, clean Git history. | Strict TypeScript type safety, Vitest unit test suite covering state machine, score weighting, and NLP matcher. Git branching model (`Dev_Sharif`). |
-| **Live Demonstration & Review (10)** | Polished live demo walkthrough, technical explanations, live coding readiness. | Comprehensive step-by-step interview guide provided in [`LIVE_DEMO_GUIDE.md`](./LIVE_DEMO_GUIDE.md). |
+| **Problem Solving & Architecture** | Clear architecture, recruitment problem identification, ERD, and workflow design. | Solves resume bottleneck with a 6-stage hiring state machine and composite score calculator. Layered architecture separating client, REST API, and DB. |
+| **Frontend & User Experience** | Responsive UI, clear navigation, candidate pipeline, loading/error states. | Built with Next.js 14 App Router & Tailwind CSS. Features candidate pipeline Kanban/table, quick role switcher, skeleton loaders, and interactive modals. |
+| **Backend & Business Logic** | Robust REST API, state transitions, validation, clean modular code. | Standalone Express & TypeScript REST API on port 5000. Workflow service enforces status transitions (`APPLIED` → `SCREENING` → `AI_ANALYZED` → `INTERVIEW_SCHEDULED` → `OFFER_EXTENDED` → `HIRED`/`REJECTED`). |
+| **Database & Data Persistence** | Relational DB, foreign keys, migrations, indexing, pgAdmin 4 support. | **PostgreSQL 18** managed via **Prisma ORM**. Tables: `users`, `jobs`, `applications`, `reviews`, `audit_logs`. Full pgAdmin 4 connectivity. |
+| **Security & Data Integrity** | Authentication, authorization, input validation, secure credential storage. | JWT bearer authentication, role-based access control (`ADMIN`, `RECRUITER`, `REVIEWER`, `APPLICANT`), Zod schema validation, and salted `bcryptjs` password hashing. |
+| **AI / Intelligent Evaluation** | Practical AI matching, clear documentation of inputs/outputs/limitations. | Dual-mode AI evaluator: Offline NLP heuristic keyword & experience matcher with confidence scores, plus optional Gemini LLM integration. Detailed in [`AI_FEATURE_DOC.md`](./AI_FEATURE_DOC.md). |
+| **Code Quality & Automated Testing** | Readable TypeScript, automated unit/integration tests, clean Git history. | Strict TypeScript type safety, Vitest unit test suite covering state machine, score weighting, and NLP matcher. Git branching model (`Dev_Sharif`). |
+| **Operational Readiness & Architecture** | Polished live demo walkthrough, technical explanations, live coding readiness. | Comprehensive step-by-step technical guide provided in [`LIVE_DEMO_GUIDE.md`](./LIVE_DEMO_GUIDE.md). |
 
 ---
 
@@ -109,7 +109,7 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ---
 
-## 🔑 Pre-Seeded Assessment Test Accounts
+## 🔑 Pre-Seeded Demo & Test Accounts
 
 | Role | Email | Password | Permissions |
 | :--- | :--- | :--- | :--- |

@@ -1,14 +1,14 @@
 # Live Demonstration & Technical Review Guide
-> **Preparation Guide for the NZ Tech Assessment Review & Live Defense (10 Marks)**
+> **Technical Demonstration & System Architecture Walkthrough Guide**
 
 ---
 
 ## 1. 5-Minute Live Walkthrough Script
 
-When the examiners ask you to demonstrate your project, follow this structured narrative:
+When demonstrating the platform to recruiters, stakeholders, or engineering leads, follow this structured narrative:
 
 ### Step 1: Objective & Business Problem (1 min)
-> *"Hello! For my assessment, I built **HirePulse**, an AI-powered applicant tracking and candidate evaluation pipeline. The goal is to solve the bottleneck engineering teams face when reviewing hundreds of resumes, ensuring fair screening, rigorous status workflows, and continuous compliance."*
+> *"Hello! I built **HirePulse**, an AI-powered applicant tracking and candidate evaluation pipeline. The goal is to solve the bottleneck engineering teams face when reviewing hundreds of resumes, ensuring fair screening, rigorous status workflows, and continuous compliance."*
 
 ### Step 2: The Core User Flow (2 mins)
 1. **Show the Dashboard (`/dashboard`)**:
@@ -45,12 +45,12 @@ When the examiners ask you to demonstrate your project, follow this structured n
 
 ### Question: "Explain your status workflow state machine."
 - **Answer**: 
-  - *"Located in `src/lib/workflow.ts`. Instead of allowing arbitrary status updates, transitions must follow a directed acyclic graph.*
+  - *"Located in `src/services/workflowService.ts` on the backend. Instead of allowing arbitrary status updates, transitions must follow a directed acyclic graph.*
   - *We enforce business rules: an application cannot jump directly from `APPLIED` to `OFFER_EXTENDED` without screening; an offer cannot be extended without at least one recorded interview review; rejections must log a compliance reason; and reopening a rejected candidate requires `ADMIN` privileges."*
 
 ### Question: "How does your AI/ML feature work?"
 - **Answer**: 
-  - *"Located in `src/lib/aiMatcher.ts`. I designed it as a **dual-mode system**. For guaranteed 100% offline local review without external API dependencies, it runs a deterministic NLP engine with tokenization, synonym matching, experience weighting, and density scoring.*
+  - *"Located in `src/services/aiService.ts`. I designed it as a **dual-mode system**. For guaranteed 100% offline local review without external API dependencies, it runs a deterministic NLP engine with tokenization, synonym matching, experience weighting, and density scoring.*
   - *If an API key is provided in `.env`, it seamlessly upgrades to generative LLM analysis (Gemini/OpenAI) for deeper semantic synthesis."*
 
 ---
@@ -60,25 +60,25 @@ When the examiners ask you to demonstrate your project, follow this structured n
 Interviewers often ask for a short live modification during technical reviews. Here is how to handle the most common requests:
 
 ### Scenario A: "Add a minimum salary filter to the Jobs page"
-1. Open `src/app/api/jobs/route.ts`:
-   - In `GET`, read `searchParams.get("minSalary")`.
+1. Open `src/routes/jobRoutes.ts`:
+   - In `GET`, read `req.query.minSalary`.
    - Add to `where`: `if (minSalary) where.minSalary = { gte: parseInt(minSalary) };`.
-2. In `src/app/jobs/page.tsx`:
+2. In `frontend/src/app/jobs/page.tsx`:
    - Add a number input `<input type="number" placeholder="Min Salary" onChange={...} />`.
 
 ### Scenario B: "Change the weight of the AI Score from 30% to 20% and Technical to 55%"
-1. Open `src/lib/scoreCalculator.ts`:
-   - Change line 46: `const aiCont = normalizedAi * 0.20;`
-   - Change line 47: `const techCont = avgTechPercent * 0.55;`
+1. Open `backend/src/services/scoreService.ts`:
+   - Change: `const aiCont = normalizedAi * 0.20;`
+   - Change: `const techCont = avgTechPercent * 0.55;`
    - Run `npm test` &rarr; update the expected test value in `tests/scoreCalculator.test.ts`.
 
 ### Scenario C: "Add a new stage 'BACKGROUND_CHECK' before HIRED"
-1. Open `src/types/index.ts`:
+1. Open `backend/src/types/index.ts` and `frontend/src/types/index.ts`:
    - Add `"BACKGROUND_CHECK"` to `ApplicationStatus`.
-2. Open `src/lib/workflow.ts`:
+2. Open `backend/src/services/workflowService.ts`:
    - In `ALLOWED_TRANSITIONS`, update `OFFER_EXTENDED: ["BACKGROUND_CHECK", "REJECTED"]`.
    - Add `BACKGROUND_CHECK: ["HIRED", "REJECTED"]`.
-3. Open `src/components/StatusBadge.tsx`:
+3. Open `frontend/src/components/StatusBadge.tsx`:
    - Add case `"BACKGROUND_CHECK"` with blue/purple styling.
 
 ---

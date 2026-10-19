@@ -1,5 +1,5 @@
 # AI / ML Feature Documentation: Smart Candidate Resume Matcher
-> **Assessment Section 2 & 5 Requirement: AI / ML Feature & Explanation (10 Marks)**
+> **Technical Specification: AI / ML Resume Analysis & Evaluation Engine**
 
 ---
 
@@ -8,7 +8,7 @@
 Screening hundreds of technical resumes is often slow, subjective, and prone to human fatigue. 
 The **Smart Candidate Resume Matcher** in HirePulse automatically extracts key technical proficiencies, evaluates experience seniority alignment, calculates a normalized match score (0-100%), detects specific technology skill gaps, and synthesizes tailored interview questions for hiring managers.
 
-To guarantee **100% offline reliability for local examiner review** while maintaining cutting-edge LLM capabilities, HirePulse features a **Dual-Mode AI Architecture**:
+To guarantee **100% offline reliability for seamless local evaluation and zero-latency execution** while maintaining cutting-edge LLM capabilities, HirePulse features a **Dual-Mode AI Architecture**:
 1. **Local Deterministic NLP Heuristic Matcher**: Zero-latency, fully offline rule & vector matching engine that requires no external API keys or network connection.
 2. **Generative LLM Reasoning Engine (Google Gemini / OpenAI)**: Automatically activated if an API key is provided in `.env`, producing qualitative semantic evaluations.
 

@@ -42,3 +42,7 @@ Thumbs.db
 .env*.local
 frontend/.env
 backend/.env
+
+# Local notes & presentation guides
+LIVE_DEMO_GUIDE.md
+*.scratch

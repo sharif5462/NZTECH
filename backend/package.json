@@ -1,7 +1,7 @@
 {
-  "name": "nztech-hirepulse-rest-api",
+  "name": "hirepulse-backend-api",
   "version": "1.0.0",
-  "description": "Standalone Express & TypeScript REST API for NZ Tech HirePulse Recruitment System",
+  "description": "Standalone Express & TypeScript REST API service for HirePulse ATS platform",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

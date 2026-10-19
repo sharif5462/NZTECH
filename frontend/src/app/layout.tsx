@@ -3,7 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "HirePulse | AI-Powered Recruitment & Pipeline Assessment",
+  title: "HirePulse | Modern Recruitment & Applicant Tracking System",
   description: "Next-generation full-stack ATS with intelligent candidate matching and status workflows.",
 };
 
@@ -21,7 +21,7 @@ export default function RootLayout({
         </main>
         <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
           <p>
-            HirePulse ATS &bull; Built for NZ Tech Innovation Software Developer Practical Assessment
+            HirePulse ATS &bull; Enterprise Recruitment Platform &copy; 2026
           </p>
         </footer>
       </body>

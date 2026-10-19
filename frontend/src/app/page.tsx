@@ -42,7 +42,7 @@ export default function Home() {
       <div className="text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold shadow-sm">
           <Sparkles className="h-4 w-4" />
-          <span>NZ Tech Innovation Assessment &bull; Full-Stack Practical Project</span>
+          <span>Next-Gen Talent Acquisition &bull; Intelligent Hiring Pipeline</span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
@@ -50,14 +50,13 @@ export default function Home() {
         </h1>
 
         <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 leading-relaxed">
-          HirePulse is an enterprise recruitment platform designed to solve candidate screening bottlenecks.
-          Featuring a status-based workflow state machine, PostgreSQL persistence via Prisma ORM, and a dual-mode AI resume scoring engine.
+          Streamline candidate screening, evaluate resumes with AI-assisted insights, track candidate stages through a governed workflow pipeline, and collaborate seamlessly across your hiring team.
         </p>
 
         {metrics && (
           <div className="inline-flex items-center gap-6 px-5 py-2.5 rounded-2xl bg-white border border-slate-200 shadow-sm text-xs text-slate-600">
             <span>
-              <strong className="text-indigo-600 font-bold">{metrics.activeJobs}</strong> Active Positions in DB
+              <strong className="text-indigo-600 font-bold">{metrics.activeJobs}</strong> Active Positions
             </span>
             <span className="h-3 w-px bg-slate-200" />
             <span>

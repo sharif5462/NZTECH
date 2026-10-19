@@ -1,56 +1,65 @@
-# RestAPINZtech — Standalone Express & TypeScript REST API
-> **HirePulse Recruitment Platform | Standalone Backend REST API**
+# HirePulse Backend REST API
 
-This is the decoupled, standalone backend REST API service for the HirePulse recruitment platform. It runs on Express.js, TypeScript, Prisma ORM, and PostgreSQL 18.
+Standalone backend REST API service for the HirePulse recruitment platform. Built with Express.js, TypeScript, Prisma ORM, and PostgreSQL 18.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### 1. Start PostgreSQL (Port 5432)
-Ensure your PostgreSQL instance is running on port `5432` with database `hirepulse_db`.
+### 1. Database Connection
+Ensure PostgreSQL is running on port `5432` with database `hirepulse_db`:
+```env
+DATABASE_URL="postgresql://postgres:Shuvo5462@localhost:5432/hirepulse_db?schema=public"
+```
 
-### 2. Install & Run API Server (Port 5000)
+### 2. Install & Start Server (Port 5000)
 ```bash
-cd "D:\My Project\RestAPINZtech"
 npm install
+npx prisma generate
 npm run dev
 ```
-*(Or simply double-click `run-api.bat`)*
 
-The server will start at: **`http://localhost:5000`**
+The server listens on **`http://localhost:5000`**.
 
 ---
 
-## 📡 API Endpoints
+## Architecture & Modules
 
-### 1. Authentication (`/api/auth`)
-- **`POST /api/auth/register`**: Register new user
-  ```json
-  { "name": "Sarah", "email": "sarah@nz.co", "password": "Password123!", "role": "RECRUITER" }
-  ```
-- **`POST /api/auth/login`**: Login user
-  ```json
-  { "email": "recruiter@hirepulse.nz", "password": "Password123!" }
-  ```
-  *Returns JWT Bearer token.*
-- **`GET /api/auth/me`**: Get current user profile (Header: `Authorization: Bearer <TOKEN>`)
+* `src/controllers/`: Request handling, parameter extraction, and status responses.
+* `src/routes/`: Route definitions with authentication and role-based guards.
+* `src/services/`: Core business logic decoupled from HTTP:
+  * `workflowService.ts`: Candidate status state machine and rule validation.
+  * `scoreService.ts`: Multi-criteria composite score calculations.
+  * `aiService.ts`: Deterministic heuristic resume parser and LLM fallback.
+* `src/middlewares/`: JWT authentication, Zod request payload validation, and global error handling.
+* `prisma/schema.prisma`: Relational database schema with cascade rules and indexes.
 
-### 2. Jobs (`/api/jobs`)
-- **`GET /api/jobs`**: List all jobs (filters: `?search=react`, `?department=Engineering`)
-- **`GET /api/jobs/:id`**: Single job details
-- **`POST /api/jobs`**: Create position *(Requires RECRUITER or ADMIN token)*
-- **`DELETE /api/jobs/:id`**: Delete position *(Requires ADMIN token)*
+---
 
-### 3. Applications (`/api/applications`)
-- **`GET /api/applications`**: List all candidate applications (filters: `?status=SCREENING`)
-- **`GET /api/applications/:id`**: Full application details + reviews + audit trail
-- **`POST /api/applications`**: Submit application
-- **`POST /api/applications/:id/status`**: Transition status via State Machine *(Requires RECRUITER or ADMIN token)*
-- **`POST /api/applications/:id/ai-match`**: Trigger AI NLP resume matching
+## API Endpoints
 
-### 4. Reviews (`/api/reviews`)
-- **`POST /api/reviews`**: Submit interview score (Technical 1-10, Communication 1-10, Culture 1-10)
+### Authentication (`/api/auth`)
+* `POST /api/auth/register`: Register new user
+* `POST /api/auth/login`: Authenticate and issue signed JWT Bearer token
+* `GET /api/auth/me`: Fetch authenticated user profile
+* `GET /api/auth/users`: List active system users and roles
 
-### 5. Analytics (`/api/analytics`)
-- **`GET /api/analytics`**: Real-time pipeline funnel counts & top candidates
+### Jobs (`/api/jobs`)
+* `GET /api/jobs`: Query job listings (filters: `?search=react`, `?department=Engineering`)
+* `GET /api/jobs/departments`: List active company departments
+* `GET /api/jobs/:id`: Fetch single job details
+* `POST /api/jobs`: Create position (*Admin / Recruiter*)
+* `DELETE /api/jobs/:id`: Delete position (*Admin*)
+
+### Applications (`/api/applications`)
+* `GET /api/applications`: Query applications (filters: `?status=SCREENING`)
+* `GET /api/applications/:id`: Application details, reviews, and audit logs
+* `POST /api/applications`: Submit candidate application with resume text
+* `PATCH /api/applications/:id/status`: Advance stage through state machine
+* `POST /api/applications/:id/ai-match`: Trigger automated resume analysis
+
+### Reviews (`/api/reviews`)
+* `POST /api/reviews`: Submit interview evaluation score (Technical 1–10, Communication 1–10, Culture 1–10)
+
+### Analytics (`/api/analytics`)
+* `GET /api/analytics`: Pipeline conversion counts and top candidate rankings

@@ -19,9 +19,8 @@ app.use(morgan("dev"));
 app.get("/", (_req: Request, res: Response) => {
   res.json({
     status: "online",
-    message: "HirePulse NZ Tech REST API Server is running",
+    message: "HirePulse REST API Server is running",
     version: "1.0.0",
-    docs: "/api/analytics",
   });
 });
 

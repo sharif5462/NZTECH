@@ -234,9 +234,9 @@ Eager to learn modern cloud stacks and PostgreSQL.`,
             </p>
           </div>
 
-          {/* Quick Pre-fill helper buttons for examiner */}
+          {/* Sample profile quick-fill for testing */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-slate-400 font-semibold uppercase">Examiner Auto-Fill:</span>
+            <span className="text-[10px] text-slate-400 font-semibold uppercase">Sample Resume:</span>
             <button
               type="button"
               onClick={() => handlePreFillSample("senior")}

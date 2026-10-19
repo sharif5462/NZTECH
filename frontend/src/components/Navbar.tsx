@@ -69,7 +69,7 @@ export function Navbar() {
     router.push("/login");
   };
 
-  // Switch demo account seamlessly for assessment reviewer
+  // Quick account switch helper for testing
   const handleQuickSwitch = async (email: string) => {
     setSwitching(true);
     setDropdownOpen(false);
@@ -126,7 +126,7 @@ export function Navbar() {
                     AI ATS
                   </span>
                 </div>
-                <span className="text-[10px] text-slate-400 font-medium">NZ Tech Assessment</span>
+                <span className="text-[10px] text-slate-400 font-medium">Recruitment Platform</span>
               </div>
             </Link>
 

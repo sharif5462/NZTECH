@@ -466,8 +466,28 @@ export const dbStore = {
     const app = s.applications.find((a) => a.id === id);
     if (!app) return null;
     const job = s.jobs.find((j) => j.id === app.jobId);
-    const appReviews = s.reviews.filter((r) => r.applicationId === id);
-    const appLogs = s.auditLogs.filter((l) => l.applicationId === id);
+    const appReviews = s.reviews
+      .filter((r) => r.applicationId === id)
+      .map((r) => ({
+        ...r,
+        overallScore: Math.round(((r.technicalScore + r.communicationScore + r.cultureScore) / 3) * 10) / 10,
+        reviewer: {
+          id: r.reviewerId,
+          name: r.reviewerName || "Alex Rivera",
+          role: "REVIEWER",
+        },
+      }));
+    const appLogs = s.auditLogs
+      .filter((l) => l.applicationId === id)
+      .map((l) => ({
+        ...l,
+        createdAt: l.timestamp,
+        details: `${l.actorName || "Recruiter"} moved candidate from ${l.fromStatus} to ${l.toStatus}`,
+        actor: {
+          name: l.actorName || "System Automated",
+          role: "RECRUITER",
+        },
+      }));
 
     return {
       ...app,
@@ -475,7 +495,19 @@ export const dbStore = {
       candidateEmail: app.email,
       candidatePhone: app.phone,
       stageChangedAt: app.updatedAt || app.createdAt,
-      job,
+      aiMatchedSkills: JSON.stringify(app.matchedSkills || []),
+      aiMissingSkills: JSON.stringify(app.missingSkills || []),
+      aiRecommendedQuestions: JSON.stringify(app.suggestedQuestions || []),
+      job: job || {
+        id: app.jobId,
+        title: app.jobTitle || "Engineering Position",
+        department: app.jobDepartment || "Core Engineering",
+        location: "Auckland, New Zealand",
+        type: "Full-time",
+        experienceLevel: "Senior",
+        requiredSkills: "TypeScript, React, Node.js",
+        description: "Software engineering position.",
+      },
       reviews: appReviews,
       auditLogs: appLogs,
     };

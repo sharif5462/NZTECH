@@ -65,9 +65,9 @@ export default function ApplyPage() {
     try {
       setLoading(true);
       const res = await fetch(`/api/jobs/${jobId}`);
-      if (!res.ok) throw new Error("Job position not found");
-      const json = await res.json();
-      setJob(json.job);
+      const { ok, data, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "Job position not found");
+      setJob(data.job);
     } catch (err: any) {
       setError(err.message);
     } finally {

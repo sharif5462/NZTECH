@@ -17,6 +17,7 @@ import {
 import StatusBadge from "@/components/StatusBadge";
 import ScoreGauge from "@/components/ScoreGauge";
 import { SkeletonTable } from "@/components/SkeletonLoader";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 interface Application {
   id: string;
@@ -63,9 +64,9 @@ function ApplicationsContent() {
       if (sort) params.set("sort", sort);
 
       const res = await fetch(`/api/applications?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to load applications");
-      const json = await res.json();
-      setApplications(json.applications);
+      const { ok, data, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "Failed to load applications");
+      setApplications(data.applications || []);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -190,8 +191,8 @@ function ApplicationsContent() {
                     </td>
 
                     <td className="py-3.5 px-4">
-                      <span className="font-medium text-slate-700 block">{app.job.title}</span>
-                      <span className="text-[11px] text-slate-400">{app.job.department}</span>
+                      <span className="font-medium text-slate-700 block">{app.job?.title || "Position"}</span>
+                      <span className="text-[11px] text-slate-400">{app.job?.department || "General"}</span>
                     </td>
 
                     <td className="py-3.5 px-4 font-mono font-medium text-slate-700">

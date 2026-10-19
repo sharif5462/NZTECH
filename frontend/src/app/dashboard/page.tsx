@@ -17,6 +17,7 @@ import {
 import StatusBadge from "@/components/StatusBadge";
 import ScoreGauge from "@/components/ScoreGauge";
 import { SkeletonCard, SkeletonTable } from "@/components/SkeletonLoader";
+import { parseApiResponse } from "@/lib/apiHelper";
 
 interface AnalyticsData {
   metrics: {
@@ -59,9 +60,9 @@ export default function DashboardPage() {
     try {
       setLoading(true);
       const res = await fetch("/api/analytics");
-      if (!res.ok) throw new Error("Failed to load dashboard metrics");
-      const json = await res.json();
-      setData(json);
+      const { ok, data: resData, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "Failed to load dashboard metrics");
+      setData(resData);
     } catch (err: any) {
       setError(err.message);
     } finally {

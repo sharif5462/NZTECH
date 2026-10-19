@@ -96,9 +96,9 @@ export default function JobsPage() {
       if (type) params.set("type", type);
 
       const res = await fetch(`/api/jobs?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to load jobs");
-      const json = await res.json();
-      setJobs(json.jobs);
+      const { ok, data, error: apiError } = await parseApiResponse(res);
+      if (!ok) throw new Error(apiError || "Failed to load jobs");
+      setJobs(data.jobs || []);
     } catch (err: any) {
       setError(err.message);
     } finally {
